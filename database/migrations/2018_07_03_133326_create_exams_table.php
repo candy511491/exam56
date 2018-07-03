@@ -15,14 +15,21 @@ class CreateExamsTable extends Migration
     {
         Schema::create('exams', function (Blueprint $table) {
             $table->increments('id');
+            $table->text('content');
+            $table->unsignedInteger('exam_id');
+            $table->foreign('exam_id')->references('id')->on('exams');
+            $table->unsignedInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedTinyInteger('score');
+
             $table->text('topic');
-$table->unsignedInteger('exam_id');
-$table->foreign('exam_id')->references('id')->on('exams')->onDelete('cascade');
-$table->text('opt1');
-$table->text('opt2');
-$table->text('opt3');
-$table->text('opt4');
-$table->unsignedTinyInteger('ans');
+            $table->unsignedInteger('exam_id');
+            $table->foreign('exam_id')->references('id')->on('exams')->onDelete('cascade');
+            $table->text('opt1');
+            $table->text('opt2');
+            $table->text('opt3');
+            $table->text('opt4');
+            $table->unsignedTinyInteger('ans');
 
             $table->string('title');
             $table->integer('user_id')->unsigned();
