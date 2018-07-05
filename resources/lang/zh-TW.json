@@ -10,6 +10,7 @@
     "Register": "註冊",
     "Name": "姓名",
     "Logout": "登出",
+    "Toggle navigation": "縮放導覽列",
     "Admin": "後台管理",
-    "Create Exam": "建立測驗"
+    "Exam Create": "建立測驗"
 }

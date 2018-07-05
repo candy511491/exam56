@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Exam;
+use App\Http\Requests\ExamRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ExamController extends Controller
 {
@@ -14,7 +16,16 @@ class ExamController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        if ($user and $user->can('建立測驗')) {
+            $exams = Exam::orderBy('created_at', 'desc')
+                ->paginate(3);
+        } else {
+            $exams = Exam::where('enable', 1)
+                ->orderBy('created_at', 'desc')
+                ->paginate(2);
+        }
+        return view('exam.index', ['exams' => $exams]);
     }
 
     /**
@@ -24,7 +35,7 @@ class ExamController extends Controller
      */
     public function create()
     {
-        //
+        return view('exam.create');
     }
 
     /**
@@ -33,11 +44,8 @@ class ExamController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ExamRequest $request)
     {
-        $this->validate($request, [
-            'title' => 'required|min:2|max:191',
-        ]);
         Exam::create($request->all());
         return redirect()->route('exam.index');
     }
@@ -48,9 +56,9 @@ class ExamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Exam $exam)
     {
-        return view('exam.show', ['exam' => $exam]);
+        return view('exam.show', compact('exam'));
     }
 
     /**
@@ -59,9 +67,9 @@ class ExamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Exam $exam)
     {
-        //
+        return view('exam.create', compact('exam'));
     }
 
     /**
@@ -71,9 +79,10 @@ class ExamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ExamRequest $request, Exam $exam)
     {
-        //
+        $exam->update($request->all());
+        return redirect()->route('exam.show', $exam->id);
     }
 
     /**
